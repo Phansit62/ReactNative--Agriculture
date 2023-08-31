@@ -42,9 +42,10 @@ export default function Products({ navigation }: any) {
         <View style={styles.body}>
           <View style={styles.searchBar}>
             <SearchBar onSearch={(e) => fecthData(10, 1, e)} />
-            <TouchableOpacity onPress={() => setShowModal(true)}>
+            {/* filter products */}
+            {/* <TouchableOpacity onPress={() => setShowModal(true)}>
               <Ionicons name="filter" size={28} color="black" style={{ marginLeft: 10, marginTop: 10 }} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <FlatList showsVerticalScrollIndicator={false} overScrollMode="never" numColumns={2} data={data} keyExtractor={(item) => item.id} renderItem={(item) => <ProductCardList data={item} />} contentContainerStyle={styles.flatListContent} columnWrapperStyle={styles.columnWrapper} />
         </View>

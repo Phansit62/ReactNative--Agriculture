@@ -3,7 +3,9 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import Dialog from "react-native-dialog";
 import { CustomTextInput } from "./TextInputs";
-import { Validation } from "../screens/home/Validatetion";
+import * as yup from "yup";
+import { useSelector } from "react-redux";
+import { fetchData } from "../authentication/authSlice";
 
 interface Props {
   visible: boolean;
@@ -41,6 +43,7 @@ export function CustomsDialogQusetion({ visible, title, description = "", onOk, 
 }
 
 export function CustomsDialogFormTransferPoint({ visible, title, onOk, onCancel, data }: Props) {
+  const user = useSelector(fetchData);
   const styles = StyleSheet.create({
     container: {
       borderRadius: 30,
@@ -57,6 +60,12 @@ export function CustomsDialogFormTransferPoint({ visible, title, onOk, onCancel,
       flexDirection: "row-reverse",
     },
   });
+  
+  const Validation = yup.object().shape({
+    telephone: yup.string().required("กรุณากรอกเบอร์โทรศัพท์"),
+    points: yup.number().min(1, "กรุณากรอกแต้ม").max(user.point, "แต้มของคุณมีไม่ถึง").required("กรุณากรอกแต๋มของคุณ"),
+  });
+
   return (
     <View>
       <Dialog.Container visible={visible} contentStyle={styles.container}>
@@ -82,6 +91,31 @@ export function CustomsDialogFormTransferPoint({ visible, title, onOk, onCancel,
             </View>
           )}
         </Formik>
+      </Dialog.Container>
+    </View>
+  );
+}
+
+export function CustomsDialog({ visible, title, description = "", onOk }: Props) {
+  const styles = StyleSheet.create({
+    container: {
+      borderRadius: 30,
+    },
+    title: {
+      fontFamily: "myFont",
+      fontSize: 18,
+    },
+    text: {
+      fontFamily: "myFont",
+      fontSize: 16,
+    },
+  });
+  return (
+    <View>
+      <Dialog.Container visible={visible} contentStyle={styles.container}>
+        <Dialog.Title style={styles.title}>{title}</Dialog.Title>
+        <Dialog.Description style={styles.text}>{description}</Dialog.Description>
+        <Dialog.Button label="ตกลง" onPress={() => onOk()} />
       </Dialog.Container>
     </View>
   );

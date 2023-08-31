@@ -41,7 +41,7 @@ export default function OrderDetail({ navigation, route }: any) {
   const renderCartItem = ({ item }: { item: Product }) => {
     return (
       <View style={styles.cartItemContainer} key={item.productsId}>
-        <Image source={item.image} style={styles.cartItemImage} />
+        {/* <Image source={item.image} style={styles.cartItemImage} /> */}
         <View style={{ flex: 1 }}>
           <Text style={styles.cartItemName}>{item.productNmae}</Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -54,6 +54,8 @@ export default function OrderDetail({ navigation, route }: any) {
       </View>
     );
   };
+
+  console.log(data);
   return (
     <View style={styles.container}>
       <View style={styles.header}>

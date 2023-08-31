@@ -6,6 +6,7 @@ import { addToCart } from "../../authentication/cartSlice";
 import { useDispatch } from "react-redux";
 import { getReviewsList } from "../../../services/Reviews.Service";
 import ReviewCard from "../../components/ReviewCard";
+import { CustomsDialog } from "../../components/CustomsDialog";
 
 interface Props {
   route: any;
@@ -25,6 +26,7 @@ const ProductDetail = ({ route }: Props) => {
   const dispatch = useDispatch();
   const [comments, setComments] = useState<string[]>([]);
   const [review, setReview] = useState([]);
+  const [isOpen,setIsOpen] = useState(false);
 
   const addItemCart = (data: Product) => {
     // // Add the product to the cart with the selected quantity
@@ -66,6 +68,7 @@ const ProductDetail = ({ route }: Props) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <CustomsDialog title="เพิ่มสินค้าสำเร็จ"  visible={isOpen}  onOk={() => setIsOpen(false)} onCancel={() => console.log()} />
       <View style={styles.container}>
         <Image
           source={{
@@ -93,10 +96,11 @@ const ProductDetail = ({ route }: Props) => {
               <TouchableOpacity
                 onPress={() => {
                   addItemCart({ productNmae: product.name, productId: product.id, quantity: parseInt(count), image: product.image, price: product.price });
+                  setIsOpen(true)
                 }}
                 style={styles.addButton}
               >
-                <Text style={styles.addButtonLabel}>Add to Cart</Text>
+                <Text style={styles.addButtonLabel} >Add to Cart</Text>
               </TouchableOpacity>
 
              <View style={styles.reviewsContainer}>

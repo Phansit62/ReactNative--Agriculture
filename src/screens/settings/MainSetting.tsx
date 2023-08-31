@@ -24,7 +24,7 @@ export default function MainSetting({ navigation }: any) {
             <ItemList title="ประวัติการใช้งาน" icon="history" onPress={() => navigation.navigate("UsageHistory")} />
             <ItemList title="คำสั่งซื้อ" icon="shopping-bag" onPress={() => navigation.navigate("HistoryOrder")} />
             <ItemList title="คูปองของฉัน" icon="ticket-confirmation-outline" typeIcon={0} onPress={() => navigation.navigate("Coupon")} />
-            <ItemList title="เปลื่ยนรหัส PIN" icon="fiber-pin" />
+            {/* <ItemList title="เปลื่ยนรหัส PIN" icon="fiber-pin" /> */}
             <ItemList title="ติดต่อเจ้าหน้าที่" icon="support-agent" onPress={() => navigation.navigate("ContactUs")} />
           </View>
           <View>

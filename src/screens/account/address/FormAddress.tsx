@@ -18,16 +18,26 @@ import CustomsSwitch from "../../../components/CustomsSwitch";
 import { useSelector } from "react-redux";
 import { fetchData } from "../../../authentication/authSlice";
 import { atan } from "react-native-reanimated";
+import { CustomsDialog } from "../../../components/CustomsDialog";
 
 export default function FormAddress({ navigation, route }: any) {
   const user = useSelector(fetchData);
   const [data, setData] = useState<any>();
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
   async function Save(values: any) {
     let res = data ? await updateAddress(values) : await createAddress(values);
+
     if (res) {
+      setIsOpen(true);
       if (res.statusCode === 200 && res.taskStatus) {
-        navigation.navigate("AddressSetting");
+        setMessage(data ? "แก้ไขข้อมูลสำเร็จ" : "เพิ่มข้อมูลสำเร็จ");
+        setTimeout(() => {
+          navigation.navigate("AddressSetting");
+        }, 300);
+      } else {
+        setMessage(data ? "แก้ไขข้อมูลไม่สำเร็จ" : "เพิ่มข้อมูลไม่สำเร็จ");
       }
     }
   }
@@ -58,15 +68,15 @@ export default function FormAddress({ navigation, route }: any) {
           validationSchema={Validation}
           enableReinitialize={true}
           initialValues={{
-            id:data ? data.id : 0 ,
+            id: data ? data.id : 0,
             userId: user.id,
-            name:data ? data.name : "",
+            name: data ? data.name : "",
             addressAt: data ? data.addressAt : "",
-            district:data ? data.district : 0,
-            subdistrict:data ? data.subdistrict : 0,
-            province:data ? data.province : 0,
-            postcode:data ? data.postcode : "",
-            is_default:data ? data.is_default : 0,
+            district: data ? data.district : 0,
+            subdistrict: data ? data.subdistrict : 0,
+            province: data ? data.province : 0,
+            postcode: data ? data.postcode : "",
+            is_default: data ? data.is_default : 0,
           }}
           onSubmit={(value) => {
             Save(value);
@@ -116,6 +126,7 @@ export default function FormAddress({ navigation, route }: any) {
           )}
         </Formik>
       </View>
+      <CustomsDialog title={message} visible={isOpen} onOk={() => setIsOpen(false)} onCancel={() => console.log()} />
     </View>
   );
 }

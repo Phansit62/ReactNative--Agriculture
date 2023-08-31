@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import store from "./stores/store";
 import StackNavigation from "./src/navigations/Stack.Navigation";
 import AuthenStackNavigation from "./src/navigations/AuthenStack.Navigation";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { fetchData, onStorage } from "./src/authentication/authSlice";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,5 +16,7 @@ export default function Main() {
     dispatch(onStorage());
   }, []);
 
-  return <NavigationContainer>{user.isLogin ? user.role === 2 ? <StackAdminNavigation /> : <StackNavigation /> : <AuthenStackNavigation />}</NavigationContainer>;
+  return (
+    <NavigationContainer>{user.isLogin ? user.role === 2 ? <StackAdminNavigation /> : <StackNavigation /> : <AuthenStackNavigation />}</NavigationContainer>
+  );
 }

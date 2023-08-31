@@ -8,14 +8,17 @@ import { fetchData } from "../../../authentication/authSlice";
 import province from "../../../json/thai_province.json";
 import amphure from "../../../json/thai_amphure.json";
 import tambon from "../../../json/thai_tambon.json";
+import { CustomsDialog } from "../../../components/CustomsDialog";
 
 export default function AddressSetting({ navigation }: any) {
   const [data, setData] = useState([]);
   const user = useSelector(fetchData);
+  const [isOpen,setIsOpen] = useState(false);
+  const [message,setMessage] = useState("");
 
   useEffect(() => {
     fecthAPI();
-  }, []);
+  }, [user]);
 
   async function fecthAPI() {
     let res = await getAddress(user.id);
@@ -29,8 +32,13 @@ export default function AddressSetting({ navigation }: any) {
   async function Delete(id:number) {
     let res = await deleteAddress(id);
     if(res){
-      if(res.statusCode === 200 && res.taskStatus){
+      setIsOpen(true);
+      if(res.statusCode === 200 && res.taskStatus) {
+        setMessage("ลบข้อมูลสำเร็จ")
         fecthAPI();
+      }
+      else{
+        setMessage("ลบข้อมูลไม่สำเร็จ")
       }
     }
   }
@@ -43,6 +51,7 @@ export default function AddressSetting({ navigation }: any) {
         <Ionicons name="add" size={28} color="black" style={{ backgroundColor: "#fff", borderRadius: 30 }} onPress={() => navigation.navigate("FormAddress")} />
       </View>
       <View style={styles.body}>{data && data.map((item: any, index: number) => <AddressCard key={index} onPressEdit={() => navigation.navigate("FormAddress",item.id)} onPressDelete={() => Delete(item.id)} name={item.name} address={`${item.addressAt} ต.${tambon.find((val) => val.id === item.subdistrict)?.name_th} อ.${amphure.find((val) => val.id === item.district)?.name_th} จ.${province.find((val) => val.id === item.province)?.name_th} ${item.postcode}`} />)}</View>
+      <CustomsDialog title={message}  visible={isOpen}  onOk={() => setIsOpen(false)} onCancel={() => console.log()} />
     </View>
   );
 }

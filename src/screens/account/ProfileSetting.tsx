@@ -7,16 +7,19 @@ import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import TextSelector from "../../components/TextSelector";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchData, onStorage } from "../../authentication/authSlice";
+import { fetchData, onReload, onStorage } from "../../authentication/authSlice";
 import { Formik } from "formik";
 import { updateUser } from "../../../services/User.Services";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CustomsDialog } from "../../components/CustomsDialog";
 
 export default function ProfileSettings({ navigation }: any) {
   const [image, setImage] = useState<any>("https://satit.udru.ac.th/wp-content/uploads/2020/06/avatar-png-1.png");
   const [upload, setUpload] = useState<any>(null);
   const dispatch = useDispatch<any>();
   const userData = useSelector(fetchData);
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState("");
   const prefix = [
     { id: 1, title: "นาย" },
     { id: 2, title: "นาง" },
@@ -40,21 +43,36 @@ export default function ProfileSettings({ navigation }: any) {
   async function Update(values: any) {
     let res = await updateUser(values);
     if (res) {
+      setIsOpen(true);
       if (res.statusCode === 200 && res.taskStatus) {
-        storeData(res.data);
+        // storeData(res.data);
+        setMessage("แก้ไขข้อมูลสำเร็จ");
+        dispatch(onReload(userData.id));
         navigation.navigate("MainSetting");
+      }
+      else{
+        setMessage("แก้ไขข้อมูลไม่สำเร็จ");
       }
     }
   }
 
-  const storeData = async (value: any) => {
-    try {
-      let data = JSON.stringify(value);
-      await AsyncStorage.setItem("@data", data);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const storeData = async (value: any) => {
+  //   try {
+  //     let data = JSON.stringify(value);
+  //     let getData = await AsyncStorage.getItem("@data");
+      
+  //     var olddata = JSON.parse(getData || "");
+  //     if(olddata) {
+  //       olddata.email = value.data;
+  //       olddata.prefix = value.prefix;
+  //       olddata.firstname = value.firstname;
+
+  //     }
+  //     await AsyncStorage.setItem("@data", data);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
   useEffect(() => {
     dispatch(onStorage());
@@ -145,6 +163,7 @@ export default function ProfileSettings({ navigation }: any) {
           )}
         </Formik>
       </View>
+      <CustomsDialog title={message} visible={isOpen} onOk={() => setIsOpen(false)} onCancel={() => console.log()} />
     </View>
   );
 }
